@@ -1,6 +1,7 @@
 const rp = require('request-promise');
 const $ = require('cheerio'); //<< for parsing the html recieved from the site
 const url = 'https://en.wikipedia.org/wiki/List_of_Presidents_of_the_United_States'; //<< site
+const potusParse = require('./potusParse');
 
 rp(url)
     .then(function (html) {
@@ -14,8 +15,17 @@ rp(url)
             wikiUrls.push($('big > a', html)[i].attribs.href); // body accesses attribute list of current index element to get href link and push into wikiUrls array
         }
 
-        console.log(wikiUrls);
+        return Promise.all(
+            wikiUrls.map(function (url) {
+                return potusParse(`http://en.wikipedia.org${url}`)
+            })
+        )
+    })
+    .then(function (presidents) {
+        console.log(presidents)
+
     })
     .catch(function (err) {
         //handle error
+        console.log(err)
     });

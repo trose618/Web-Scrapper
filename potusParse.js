@@ -6,8 +6,10 @@ const $ = require('cheerio');
 const potusParse = function (url) {
     return rp(url)
         .then(function (html) {
-            console.log($('.firstHeading', html).text()); //<< accessing text inside element holding president's name
-            console.log($('.bday', html).text()); // << accessing text inside element holding president's birthday
+            return {
+                name: $('.firstHeading', html).text(),
+                birthday: $('.bday', html).text(),
+            };
         })
         .catch(function (err) {
             //handle error
